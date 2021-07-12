@@ -82,10 +82,14 @@
             </ul>
 
             <ul>
-                <li>Existing Rooms</li>
-                <li><button>Room1</button></li>
-                <li><button>Room 2 </button></li>
-                <li><button>Room 3</button></li>
+                <li>Existing Rooms</li> 
+                <% if(user_map.length >0 ){ %>
+                    <% user_map.forEach(function(user){ %>
+                    <li class="room_names"><%- user.room_name%> </li>
+                    <% }); %>
+                <% } else { %>
+                    <li>There are no active Rooms . You can create One </li>
+                <% } %>
             </ul>
         </div>
 
@@ -99,11 +103,17 @@
     <!-- create Room Modal -->
     <div id = "create_room_modal" class = "modal">
         <div class="modal-content">
-            <span class="close">&times</span>
-            <h3>Create Room</h3>
-            <p>Enter the Room Name</p>
-            <input type = "text" class="room_name>
-            <button class="create_submit">Submit</button>
+            <form action="/createRoom" , method="post", onsubmit= "return createRoomValidation()">
+                <span class="close">&times</span>
+                <h3>Create Room</h3>
+                <p>Enter the Room Name</p>
+                <input type = "text" class="room_name" name = "room_name"value="">
+                <p>Entter Your Name</p>
+                <input type = "text" class="user_name" name = "user_name"value="">
+                <input type = "checkbox" class="isanonymous">
+                <label>Join Anonymously</label>
+                <button class="create_submit" type="submit">Submit</button>
+            </form>
         </div>
     </div>
 
@@ -111,11 +121,17 @@
     <!-- Join Room Modal -->
     <div id = "join_room_modal" class = "modal">
         <div class="modal-content">
-            <span class="close">&times</span>
-            <h3>Join Room</h3>
-            <p>Paste the Url Of the Room</p>
-            <input type = "text" class="join_room_name">
-            <button class="join_submit">Submit</button>
+            <form action = "/joinRoom" , method="post" onsubmit="return joinRoomValidation()">
+                <span class="close">&times</span>
+                <h3>Join Room</h3>
+                <p>Paste the Url Of the Room</p>
+                <input type = "text" name = "room_url" class="room_url">
+                <p>Entter Your Name</p>
+                <input type = "text" name = "join_name" class="join_name">
+                <input type = "checkbox" class="isanonymous">
+                <label>Join Anonymously</label>
+                <button class="join_submit" type="submit">Submit</button>
+            </form>
         </div>
     </div>
 </body>
@@ -135,13 +151,36 @@
             $("#join_room_modal")[0].style.display = "block";
         });
 
-        $(".create_submit").on("click",function(){
-            window.location.href = "/createRoom"
-        });
+        if($(document.body).hasClass("room_names")){
+            $(".room_no_active").removeClass("hidden")
+        }
+        function createRoomValidation(){
+            var room_name = $(".room_name").val();
+            var user_name = $(".user_name").val();
+            var is_anonymous = $(".isanonymous").is(":checked");
+            if(room_name == undefined || room_name == ""){
+                alert("Enter the Room Name")
+                return false;
+            }
+            if(!is_anonymous && (user_name == undefined || user_name == "")){
+                alert("Enter the UserName")
+                return false;
+            }
+            return true;
+        }
 
-        $(".join_submit").on("click",function(){
-            var url = $(".join_room_name").val();
-            window.location.href = url
-        });
+        function joinRoomValidation() {
+            var room_url = $(".room_url").val();
+            var join_name = $(".join_name").val();
+            if(room_url == undefined || room_url == ""){
+                alert("Enter the Room Url")
+                return false
+            }
+            if(!is_anonymous && (user_name == undefined || user_name == "")){
+                alert("Enter the UserName")
+                return false;
+            }
+            return true;
+        }
     </script>
 </html>

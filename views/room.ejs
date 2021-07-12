@@ -6,6 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <script>
     const ROOM_ID = "<%= roomId %>"
+    const ROOM_NAME = "<%= room_name %>"
+    const USER_NAME = "<%= user_name %>"
   </script>
   <script defer src="https://unpkg.com/peerjs@1.2.0/dist/peerjs.min.js"></script>
   <script src="/socket.io/socket.io.js" defer></script>
@@ -22,11 +24,7 @@
     .audio_node {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      background-color: red;
-      padding: 10px;
-      border: 2px solid blue;
-      margin: 10px;
+      border : 1px solid black;
     }
   </style>
 </head>
