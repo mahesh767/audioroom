@@ -4,6 +4,7 @@
     host: '/',
     port: '3001'
   })
+  let myVideoStream;
   const audioNode = createAudioNode()
   const myVideo = audioNode.firstChild
   myVideo.muted = true
@@ -11,6 +12,7 @@
   navigator.mediaDevices.getUserMedia({
     audio: true
   }).then(stream => {
+    myVideoStream = stream;
     addVideoStream(myVideo, stream , audioNode)
 
     myPeer.on('call', call => {
@@ -27,10 +29,13 @@
     })
   })
 
+function leaveMeeting(){
+  console.log("leaveMeeting")
   socket.on('user-disconnected', userId => {
     if (peers[userId]) peers[userId].close()
   })
-
+  window.location.href = "/firstpage"
+}
   myPeer.on('open', id => {
     socket.emit('join-room', ROOM_ID, id)
   })
@@ -63,4 +68,17 @@
     const audio_element = document.createElement('audio')
     audio_div.appendChild(audio_element)
     return audio_div
+  }
+
+  const muteUnmute = () => {
+    const enabled = myVideoStream.getAudioTracks()[0].enabled;
+    if (enabled) {
+      myVideoStream.getAudioTracks()[0].enabled = false;
+      // setUnmuteButton();
+      document.getElementById('muteUnmute').innerHTML="Unmute";
+    } else {
+      // setMuteButton();
+      document.getElementById('muteUnmute').innerHTML="Mute";
+      myVideoStream.getAudioTracks()[0].enabled = true;
+    }
   }
