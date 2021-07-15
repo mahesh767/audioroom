@@ -2,7 +2,7 @@
   const videoGrid = document.getElementById('video-grid')
   const myPeer = new Peer({
     secure : true,
-    host: 'magenta-rabbit-kaac7dt3.ws-us10.gitpod.io',
+    host: '9000-magenta-rabbit-kaac7dt3.ws-us10.gitpod.io',
     port: '9000',
   })
   let myVideoStream;
