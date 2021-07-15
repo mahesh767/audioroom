@@ -3,7 +3,7 @@
   const myPeer = new Peer({
     secure : true,
     host: '9000-magenta-rabbit-kaac7dt3.ws-us10.gitpod.io',
-    port: '9000',
+    port: 9000,
   })
   let myVideoStream;
   const audioNode = createAudioNode(USER_NAME)
