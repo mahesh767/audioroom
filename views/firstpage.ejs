@@ -3,74 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Coffee</title>
+    <title>Virtual Cafe</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <style>
-    .leftnav {
-        width: 250px;
-        background: #1676E2;
-        height: 100%;
-    }
-    .leftnav ul {
-        padding: 10px;
-        text-decoration: none;
-    }
-    .leftnav ul li {
-        margin: 10px;
-        text-decoration: none;
-        padding: 10px;
-        list-style-type: none;
-    }
-    .leftnav ul li button {
-        background: transparent;
-        margin: 0px;
-        border: 2px solid black;
-        padding: 5px;
-        border-radius: 5%;
-        text-align: center;
-    }
-
-    /* .modal {
-        display: none; 
-        position: fixed;
-        z-index: 1;
-        padding-top: 100px;
-        left: 0;
-        top: 0;
-        width: 100%; 
-        height: 80%;
-        overflow: auto;
-        background-color: rgb(0,0,0);
-        background-color: rgba(0,0,0,0.4);
-    }
-
-    /* Modal Content */
-    .modal-content {
-        background-color: #fefefe;
-        margin: auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 50%;
-        height: 70%;
-    } */
-
-    /* The Close Button */
-    .close {
-        color: #aaaaaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        text-align: right;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: #000;
-        text-decoration: none;
-        cursor: pointer;
-    }
     .navbar{
         margin-bottom: 50px;
         background-color: #EDE4E3;
@@ -84,7 +21,7 @@
         <div class="container-fluid">
             <a class="navbar-brand text-white" href="#">ROOM</a>
             <div class="nav navbar-right">
-                <p><a class="create_new_room text-white btn btn-success" data-toggle="modal" data-target="#create_room_modal">+ Create Room</a></p>
+                <button type="" class="create_new_room text-white btn btn-success" data-toggle="modal" data-target="#create_room_modal">+ Create Room</button>
             </div>  
         </div>      
     </nav>
@@ -112,53 +49,33 @@
             <% } %>
         </div>
     </div>
-    <!-- <div class="main_section">
-        <div class =leftnav>
-            <ul>
-                <li> <button class="create_new_room"> Create New Room</button></li>
-                <li> <button class="join_existing_room"> Join Room </button></li>
-            </ul>
-
-            <ul>
-                <li>Existing Rooms</li> 
-                <% if(user_map.length >0 ){ %>
-                    <% user_map.forEach(function(user){ %>
-                    <li class="room_names"><%- user.room_name%> </li>
-                    <% }); %>
-                <% } else { %>
-                    <li>There are no active Rooms . You can create One </li>
-                <% } %>
-            </ul>
-        </div>
-
-        <div class="middle_section">
-
-        </div>
-
-    </div> -->
-
-
     <!-- create Room Modal -->
     <div class="modal fade" id="create_room_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-content">
-            <form action="/createRoom" , method="post", onsubmit= "return createRoomValidation()">
-                <span class="close">&times</span>
-                <div class="form-group">
-                  <label class="font-weight-bold" for="room_name">Room Name</label>
-                  <input type="text" class="form-control room_name" name="room_name" value="" required>
-                </div>
-                <div class="form-group">
-                    <label class="font-weight-bold" for="room_desc">Description</label>
-                    <textarea type="text" class="form-control rounded-0 room_desc" rows="3" name="room_desc" placeholder="Description"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="font-weight-bold" for="user_name">Enter your Name</label>
-                    <input type="text" class="form-control user_name" name="user_name" value="" required>
-                </div>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary">Create</button>
-                </div>
-            </form>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="/createRoom" , method="post", onsubmit= "return createRoomValidation()">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="room_name">Room Name</label>
+                            <input type="text" class="form-control room_name" name="room_name" value="" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="room_desc">Description</label>
+                            <textarea type="text" class="form-control rounded-0 room_desc" rows="3" name="room_desc" placeholder="Description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-weight-bold" for="user_name">Enter your Name</label>
+                            <input type="text" class="form-control user_name" name="user_name" value="" required>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -180,53 +97,37 @@
         </div>
     </div>
 </body>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     <script>
+        function createRoomValidation(){
+            var room_name = $(".room_name").val();
+            var user_name = $(".user_name").val();
+            var is_anonymous = $(".isanonymous").is(":checked");
+            if(room_name == undefined || room_name == ""){
+                alert("Enter the Room Name")
+                return false;
+            }
+            if(!is_anonymous && (user_name == undefined || user_name == "")){
+                alert("Enter the UserName")
+                return false;
+            }
+            return true;
+        }
 
-        // $(".create_new_room").on("click",function(){
-        //     $("#create_room_modal")[0].style.display = "block";
-        // });
-
-        // $(".close").on("click",function(){
-        //     $("#create_room_modal")[0].style.display = "none";
-        //     $("#join_room_modal")[0].style.display = "none";
-        // });
-
-        // $(".join_existing_room").on("click",function(){
-        //     $("#join_room_modal")[0].style.display = "block";
-        // });
-
-        // if($(document.body).hasClass("room_names")){
-        //     $(".room_no_active").removeClass("hidden")
-        // }
-        // function createRoomValidation(){
-        //     var room_name = $(".room_name").val();
-        //     var user_name = $(".user_name").val();
-        //     var is_anonymous = $(".isanonymous").is(":checked");
-        //     if(room_name == undefined || room_name == ""){
-        //         alert("Enter the Room Name")
-        //         return false;
-        //     }
-        //     if(!is_anonymous && (user_name == undefined || user_name == "")){
-        //         alert("Enter the UserName")
-        //         return false;
-        //     }
-        //     return true;
-        // }
-
-        // function joinRoomValidation() {
-        //     var room_url = $(".room_url").val();
-        //     var join_name = $(".join_name").val();
-        //     if(room_url == undefined || room_url == ""){
-        //         alert("Enter the Room Url")
-        //         return false
-        //     }
-        //     if(!is_anonymous && (user_name == undefined || user_name == "")){
-        //         alert("Enter the UserName")
-        //         return false;
-        //     }
-        //     return true;
-        // }
+        function joinRoomValidation() {
+            var room_url = $(".room_url").val();
+            var join_name = $(".join_name").val();
+            if(room_url == undefined || room_url == ""){
+                alert("Enter the Room Url")
+                return false
+            }
+            if(!is_anonymous && (user_name == undefined || user_name == "")){
+                alert("Enter the UserName")
+                return false;
+            }
+            return true;
+        }
 
         function joinRoom(link){
             window.location.href = link;
