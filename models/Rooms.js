@@ -5,6 +5,9 @@ var RoomSchema = new mongoose.Schema({
     roomDesc : String,
     users : Array,
     created : Date,
+    speakers :[{}],
+    members : [{}],
+    created_by : String,
 })
 
 module.exports = mongoose.model('Rooms',RoomSchema)

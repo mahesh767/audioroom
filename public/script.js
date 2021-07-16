@@ -1,8 +1,13 @@
   const socket = io('/')
   const videoGrid = document.getElementById('video-grid')
   const myPeer = new Peer({
-    host: '/',
-    port: '3001',
+    config: {'iceServers': [
+      { url: 'stun:stun.l.google.com:19302' },
+      { url: 'turn:65.2.69.74:3478?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' }
+    ]},
+    secure : true,
+    host: '/virtualcafepeerjs.herokuapp.com',
+    port: 443,
   })
   let myVideoStream;
   const audioNode = createAudioNode(USER_NAME)
@@ -19,7 +24,6 @@
     myPeer.on('call', call => {
       console.log(call)
       call.answer(stream)
-      console.log("adding first user to the new user")
       var user_name = call.metadata.username
       const videoNode = createAudioNode(user_name)
       const video = videoNode.firstChild
@@ -29,9 +33,7 @@
     })
 
     socket.on('user-connected', userId => {
-      setTimeout(() => {
       connectToNewUser(userId, stream)
-      },2000)
     })
   })
 
@@ -85,10 +87,8 @@ function leaveMeeting(){
     const enabled = myVideoStream.getAudioTracks()[0].enabled;
     if (enabled) {
       myVideoStream.getAudioTracks()[0].enabled = false;
-      // setUnmuteButton();
       document.getElementById('muteUnmute').innerHTML="Unmute";
     } else {
-      // setMuteButton();
       document.getElementById('muteUnmute').innerHTML="Mute";
       myVideoStream.getAudioTracks()[0].enabled = true;
     }
