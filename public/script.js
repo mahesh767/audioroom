@@ -3,7 +3,7 @@
   const myPeer = new Peer({
     config: {'iceServers': [
       { url: 'stun:stun.l.google.com:19302' },
-      { url: 'turn:65.2.69.74:3478?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' }
+      { url: 'turn:13.233.155.97?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' }
     ]},
     secure : true,
     host: '/virtualcafepeerjs.herokuapp.com',
