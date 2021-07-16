@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatBot</title>
+    <title>Virtual Coffee</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
@@ -40,7 +40,7 @@
         left: 0;
         top: 0;
         width: 100%; 
-        height: 100%;
+        height: 80%;
         overflow: auto;
         background-color: rgb(0,0,0);
         background-color: rgba(0,0,0,0.4);
@@ -74,7 +74,38 @@
 
 </style>
 <body>
-    <div class="main_section">
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">ROOM</a>
+        <p><a class="create_new_room text-primary">+ Create Room</a></p>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
+        </form>      
+    </nav>
+    <div class="container">
+        <div class="row">
+            <% if(user_map.length >0 ){ %>
+                <% user_map.forEach(function(user){ %>
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <%- user.room_name%> <%- user%>
+                        </div>
+                        <div class="card-body">
+                          <!-- <p class="card-text"><%- user.room_desc%></p> -->
+                          <!-- <%var link = "http://localhost:3001" + user.room_id;%> -->
+                          <a href="" class="btn btn-primary"></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- <li class="room_names"><%- user.room_name%> </li> -->
+                <% }); %>
+            <% } else { %>
+                <li>There are no active Rooms . You can create One </li>
+            <% } %>
+        </div>
+    </div>
+    <!-- <div class="main_section">
         <div class =leftnav>
             <ul>
                 <li> <button class="create_new_room"> Create New Room</button></li>
@@ -97,7 +128,7 @@
 
         </div>
 
-    </div>
+    </div> -->
 
 
     <!-- create Room Modal -->
@@ -105,14 +136,21 @@
         <div class="modal-content">
             <form action="/createRoom" , method="post", onsubmit= "return createRoomValidation()">
                 <span class="close">&times</span>
-                <h3>Create Room</h3>
-                <p>Enter the Room Name</p>
-                <input type = "text" class="room_name" name = "room_name"value="">
-                <p>Entter Your Name</p>
-                <input type = "text" class="user_name" name = "user_name"value="">
-                <input type = "checkbox" class="isanonymous">
-                <label>Join Anonymously</label>
-                <button class="create_submit" type="submit">Submit</button>
+                <div class="form-group">
+                  <label class="font-weight-bold" for="room_name">Room Name</label>
+                  <input type="text" class="form-control room_name" name="room_name" value="" required>
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-bold" for="room_desc">Description</label>
+                    <textarea type="text" class="form-control rounded-0 room_desc" rows="3" name="room_desc" placeholder="Description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-bold" for="user_name">Enter your Name</label>
+                    <input type="text" class="form-control user_name" name="user_name" value="" required>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
             </form>
         </div>
     </div>
