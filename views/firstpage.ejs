@@ -32,7 +32,7 @@
         text-align: center;
     }
 
-    .modal {
+    /* .modal {
         display: none; 
         position: fixed;
         z-index: 1;
@@ -54,7 +54,7 @@
         border: 1px solid #888;
         width: 50%;
         height: 70%;
-    }
+    } */
 
     /* The Close Button */
     .close {
@@ -71,30 +71,37 @@
         text-decoration: none;
         cursor: pointer;
     }
-
+    .navbar{
+        margin-bottom: 50px;
+        background-color: #EDE4E3;
+    }
+    .card{
+        margin-bottom: 20px;
+    }
 </style>
 <body>
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="#">ROOM</a>
-        <p><a class="create_new_room text-primary">+ Create Room</a></p>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-success my-2 my-sm-0" type="submit">Search</button>
-        </form>      
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand text-white" href="#">ROOM</a>
+            <div class="nav navbar-right">
+                <p><a class="create_new_room text-white btn btn-success" data-toggle="modal" data-target="#create_room_modal">+ Create Room</a></p>
+            </div>  
+        </div>      
     </nav>
     <div class="container">
         <div class="row">
             <% if(user_map.length >0 ){ %>
                 <% user_map.forEach(function(user){ %>
                 <div class="col-6">
-                    <div class="card">
+                    <div class="card shadow p-3 mb-5 bg-white rounded">
                         <div class="card-header">
                             <%- user.room_name%> <%- user%>
                         </div>
                         <div class="card-body">
                           <!-- <p class="card-text"><%- user.room_desc%></p> -->
-                          <!-- <%var link = "http://localhost:3001" + user.room_id;%> -->
-                          <a href="" class="btn btn-primary"></a>
+                          <div class="text-center">
+                            <a href="<%- user.link%>" class="btn btn-primary">Join</a>
+                          </div>
                         </div>
                     </div>
                 </div>
@@ -132,7 +139,7 @@
 
 
     <!-- create Room Modal -->
-    <div id = "create_room_modal" class = "modal">
+    <div class="modal fade" id="create_room_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-content">
             <form action="/createRoom" , method="post", onsubmit= "return createRoomValidation()">
                 <span class="close">&times</span>
@@ -176,49 +183,53 @@
 
     <script>
 
-        $(".create_new_room").on("click",function(){
-            $("#create_room_modal")[0].style.display = "block";
-        });
+        // $(".create_new_room").on("click",function(){
+        //     $("#create_room_modal")[0].style.display = "block";
+        // });
 
-        $(".close").on("click",function(){
-            $("#create_room_modal")[0].style.display = "none";
-            $("#join_room_modal")[0].style.display = "none";
-        });
+        // $(".close").on("click",function(){
+        //     $("#create_room_modal")[0].style.display = "none";
+        //     $("#join_room_modal")[0].style.display = "none";
+        // });
 
-        $(".join_existing_room").on("click",function(){
-            $("#join_room_modal")[0].style.display = "block";
-        });
+        // $(".join_existing_room").on("click",function(){
+        //     $("#join_room_modal")[0].style.display = "block";
+        // });
 
-        if($(document.body).hasClass("room_names")){
-            $(".room_no_active").removeClass("hidden")
-        }
-        function createRoomValidation(){
-            var room_name = $(".room_name").val();
-            var user_name = $(".user_name").val();
-            var is_anonymous = $(".isanonymous").is(":checked");
-            if(room_name == undefined || room_name == ""){
-                alert("Enter the Room Name")
-                return false;
-            }
-            if(!is_anonymous && (user_name == undefined || user_name == "")){
-                alert("Enter the UserName")
-                return false;
-            }
-            return true;
-        }
+        // if($(document.body).hasClass("room_names")){
+        //     $(".room_no_active").removeClass("hidden")
+        // }
+        // function createRoomValidation(){
+        //     var room_name = $(".room_name").val();
+        //     var user_name = $(".user_name").val();
+        //     var is_anonymous = $(".isanonymous").is(":checked");
+        //     if(room_name == undefined || room_name == ""){
+        //         alert("Enter the Room Name")
+        //         return false;
+        //     }
+        //     if(!is_anonymous && (user_name == undefined || user_name == "")){
+        //         alert("Enter the UserName")
+        //         return false;
+        //     }
+        //     return true;
+        // }
 
-        function joinRoomValidation() {
-            var room_url = $(".room_url").val();
-            var join_name = $(".join_name").val();
-            if(room_url == undefined || room_url == ""){
-                alert("Enter the Room Url")
-                return false
-            }
-            if(!is_anonymous && (user_name == undefined || user_name == "")){
-                alert("Enter the UserName")
-                return false;
-            }
-            return true;
+        // function joinRoomValidation() {
+        //     var room_url = $(".room_url").val();
+        //     var join_name = $(".join_name").val();
+        //     if(room_url == undefined || room_url == ""){
+        //         alert("Enter the Room Url")
+        //         return false
+        //     }
+        //     if(!is_anonymous && (user_name == undefined || user_name == "")){
+        //         alert("Enter the UserName")
+        //         return false;
+        //     }
+        //     return true;
+        // }
+
+        function joinRoom(link){
+            window.location.href = link;
         }
     </script>
 </html>

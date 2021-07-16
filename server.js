@@ -37,7 +37,7 @@ app.get('/firstpage',async (req,res) => {
       throw err
     }
     res.forEach(function(Room){
-      user_map.push({users:Room.users , room_name : Room.roomName , room_count : Room.users.length}) 
+      user_map.push({users:Room.users , room_name : Room.roomName , room_count : Room.users.length, link: "http://localhost:3000/"+Room.roomid}) 
     })
   })
   res.render('firstpage',{user_map : user_map})
