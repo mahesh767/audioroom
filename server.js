@@ -30,15 +30,19 @@ app.get("/",(req,res) => {
 
 app.get('/firstpage',async (req,res) => {
   var user_map = []
-  const Roomodel = await Rooms.find({},function(err,res){
-    if(err){
-      throw err
-    }
-    res.forEach(function(Room){
+  try {
+    const Roomodel = await Rooms.find({},function(err,room){
+      if(err){
+        throw err
+      }
+    room.forEach(function(Room){
       user_map.push({users:Room.users , room_name : Room.roomName , room_count : Room.users.length}) 
     })
   })
-  res.render('firstpage',{user_map : user_map})
+  }
+  catch(err){
+    console.log(err)
+  } 
 })
 
 app.post('/createRoom', (req, res) => {
@@ -50,15 +54,20 @@ app.post('/createRoom', (req, res) => {
   res.redirect(`/${roomId}`)
 })
 
-app.get('/:room',(req,res) => {
+app.get('/:room',async (req,res) => {
   var room_name = req.session.room_name
   var user_name = req.session.user_name
   if(room_name == undefined){
-    room_name = Rooms.find({roomid : req.params.room},function(err,res){
-      if(err)
-        throw err
-      room_name = res.roomName
-    })
+    try {
+      room_name = await Rooms.find({roomid : req.params.room},function(err,res){
+        if(err)
+          throw err
+        room_name = res.roomName
+      })
+    }
+    catch(err){
+      console.log(err)
+    }
   }
   if(user_name == undefined){
     user_name = "anonymous"
@@ -75,42 +84,119 @@ app.post('/joinRoom',(req,res) => {
 })
 
 io.on('connection', socket => {
-  socket.on('join-room', (roomId, userId , roomname, username) => {
-    const filter = {roomid : roomId}
+  socket.on('join-room', async (roomId, userId , roomname, username , isspeaker) => {
+    console.log("connected")
     const update = {"$push" : {"users" : userId},"roomName" : roomname}
-    const Roommodel = Rooms.findOneAndUpdate(filter,update,{
-      new :true,
-      upsert : true,
-    },function(err,res){
-      if(err)
-        throw err
-      console.log(res)
-    })
+    try {
+      const Roommodel = await Rooms.findOne({roomid: roomId},async function(err,res){
+        if(res == undefined){
+          var user_obj = {}
+          user_obj['user_id'] = userId
+          user_obj['user_name'] = username
+          var createroom = new Rooms()
+          createroom.roomid = roomId
+          createroom.roomname = roomname
+          createroom.users = user_obj
+          createroom.created = new Date()
+          createroom.speakers = user_obj
+          createroom.members = {}
+          createroom.created_by = username
+          createroom.save(function(err,data){
+            if(err){
+              console.log(err)
+            }
+            else {
+              console.log("create room")
+              console.log(data)
+            }
+          })
+        }
+        else {
+            $update = {}
+            $user_obj = {}
+            $user_obj['user_id'] = userId
+            $user_obj['user_name'] = username
+            if(isspeaker){
+              $update['$push'] = {"speakers" : $user_obj}
+            }
+            else {
+              $update['$push'] = {"members" : $user_obj}
+            }
+            await Rooms.findOneAndUpdate({roomid:roomId},$update,async function(err,res){
+              if(err){
+                console.log(err)
+              }
+              else {
+                console.log("join room")
+                console.log(res)
+              }
+            })
+        }
+      });
+    }
+    catch(err){
+      console.log(err)
+    }
     socket.join(roomId)
     socket.to(roomId).broadcast.emit('user-connected', userId)
-
-    socket.on('disconnect', () => {
-      console.log("disconnect")
+    
+    socket.on('disconnect', async () => {
+      console.log('disconnected')
       const filter = {roomid : roomId}
-      const update = {"$pull" : {"users" : userId}}
-      const Roommodel = Rooms.findOneAndUpdate(filter,update,{
-        new :true,
-        upsert : true,
-      },function(err,res){
-        if(err){
-          throw err
+      const Roommodel = await Rooms.findOne(filter , async function(err,res){
+        if(res == undefined){
+          console.log(err)
         }
-        console.log(res)
+        else if(res != undefined){
+          $update = {}
+          $remove = false
+          $is_found_in_speaker = false
+          $is_found_in_member = false
+          for(var i in res.speakers){
+            if(res.speakers[i].user_id == userId){
+              $is_found_in_speaker = true;
+              if(i == 0){
+                $remove = true;
+              }
+            }
+          }
+          for(var i in res.members){
+            if(res.members[i].user_id == userId){
+              $is_found_in_member = true;
+            }
+          }
+          if($is_found_in_speaker){
+            $update['$pull'] = {'speakers' : {'user_id' : userId}}
+          }
+          else if($is_found_in_member){
+            $update['$pull'] = {'members' : {'user_id' : userId}}
+          }
+          console.log($update)
+          if($remove){
+            await Rooms.findOneAndDelete(filter,async function(err,res){
+              if(err){
+                console.log(err)
+              }
+              else {
+                console.log(res)
+              }
+            })
+          }
+          else {
+            await Rooms.findOneAndUpdate(filter,$update, async function(err,res){
+              if(err){
+                console.log(err)
+              }
+              else {
+                console.log(res)
+              }
+            })
+          }
+        }
       })
-      // const deletewhenrequired = Rooms.findOneAndDelete({"users" : {"$size" : 0}},function(err,res){
-      //   if(err)
-      //     throw err
-      //   console.log(res)
-      // })
-      socket.to(roomId).broadcast.emit('user-disconnected', userId)
+        socket.to(roomId).broadcast.emit('user-disconnected', userId)
     })
   })
+
 })
-
-
 server.listen(process.env.PORT || 3000)
