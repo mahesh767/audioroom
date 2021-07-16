@@ -62,25 +62,27 @@ app.post('/createRoom', (req, res) => {
 app.get('/:room',async (req,res) => {
   var room_name = req.session.room_name
   var user_name = req.session.user_name
-  if(room_name == undefined){
-    try {
-      room_name = await Rooms.find({roomid : req.params.room},function(err,res){
-        if(err)
-          throw err
-        room_name = res.roomName
-      })
-    }
-    catch(err){
-      console.log(err)
-    }
-  }
-  if(user_name == undefined){
-    user_name = "anonymous"
-  }
+  // if(room_name == undefined){
+  //   try {
+  //     room_name = await Rooms.find({roomid : req.params.room},function(err,res){
+  //       if(err)
+  //         throw err
+  //       else 
+  //       room_name = res.roomName
+  //     })
+  //   }
+  //   catch(err){
+  //     console.log(err)
+  //   }
+  // }
+  // if(user_name == undefined){
+  //   user_name = "anonymous"
+  // }
   res.render('room', { roomId: req.params.room , room_name : room_name , user_name : user_name})
 })
 
 app.post('/joinRoom',(req,res) => {
+  console.log(req.body)
   const room_url = req.body.room_url
   const join_name = req.body.join_name
   req.session.user_name = join_name
