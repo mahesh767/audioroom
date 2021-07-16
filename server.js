@@ -6,15 +6,17 @@ const { v4: uuidV4 } = require('uuid')
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const mongoose = require('mongoose')
-const DBCONNECTION_URL = "mongodb+srv://darwin:darwin@cluster0.ismdm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-const connection = mongoose.connect(DBCONNECTION_URL,{useNewUrlParser : true , useUnifiedTopology : true},function(error){
-    if(error){
-      console.log(error)
-    }
-    else {
-      console.log("DB connected")
-    }
-})
+const DBCONNECTION_URL = "mongodb://localhost/audioroom"
+try {
+   mongoose.connect(
+    DBCONNECTION_URL,
+    { useNewUrlParser: true, useUnifiedTopology: true },
+    () => console.log("DB is connected")
+  );
+
+} catch (e) {
+  console.log("could not connect");
+}
 
 const Rooms = require('./models/Rooms')
 
@@ -36,7 +38,7 @@ app.get('/firstpage',async (req,res) => {
         throw err
       }
     room.forEach(function(Room){
-      user_map.push({users:Room.users , room_name : Room.roomName , room_count : Room.users.length}) 
+      user_map.push({users:Room.users , room_name : Room.roomName , room_count : Room.users.length, link: "http://localhost:3000/"+Room.roomid}) 
     })
     res.render('firstpage',{user_map : user_map})
   })
@@ -50,8 +52,10 @@ app.post('/createRoom', (req, res) => {
   const roomId = uuidV4()
   const room_name = req.body.room_name
   const user_name = req.body.user_name
+  const room_desc = req.body.room_desc
   req.session.room_name = room_name
   req.session.user_name = user_name
+  req.session.room_desc = room_desc
   res.redirect(`/${roomId}`)
 })
 
