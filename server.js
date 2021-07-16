@@ -38,6 +38,7 @@ app.get('/firstpage',async (req,res) => {
     room.forEach(function(Room){
       user_map.push({users:Room.users , room_name : Room.roomName , room_count : Room.users.length}) 
     })
+    res.render('firstpage',{user_map : user_map})
   })
   }
   catch(err){
