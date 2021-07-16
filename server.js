@@ -6,7 +6,7 @@ const { v4: uuidV4 } = require('uuid')
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const mongoose = require('mongoose')
-const DBCONNECTION_URL = "mongodb://localhost/audioroom"
+const DBCONNECTION_URL = "mongodb+srv://darwin:darwin@cluster0.ismdm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 try {
    mongoose.connect(
     DBCONNECTION_URL,
