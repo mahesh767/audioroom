@@ -1,6 +1,10 @@
   const socket = io('/')
   const videoGrid = document.getElementById('video-grid')
   const myPeer = new Peer({
+    config: {'iceServers': [
+      { url: 'stun:stun.l.google.com:19302' },
+      { url: 'turn:3.109.54.154:3478?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' }
+    ]},
     secure : true,
     host: '/virtualcafepeerjs.herokuapp.com',
     port: 443,
