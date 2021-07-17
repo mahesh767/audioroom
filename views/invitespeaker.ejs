@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"> 
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <script defer src="https://unpkg.com/peerjs@1.2.0/dist/peerjs.min.js"></script>
+    <script src="/socket.io/socket.io.js" defer></script>
+    <title>Virtual Cafe</title>
+<body>
+    <div id = "join_room_modal" class="form-control">
+        <form action = "/inviteSpeaker/joinRoom" , method="post">
+            <div class="form-control">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="form-group">
+                    <h3>Join Room</h3>
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-bold" for = "join_name">Enter Your Name</label>
+                    <input type = "text" class="form-control join_name" name = "join_name" value = "" required>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary join_submit">Submit</button>
+                </div>
+                <div class="form-group">
+                    <input type="hidden" name = "room_url" value = "<%- roomId %>">
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

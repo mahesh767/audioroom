@@ -53,7 +53,7 @@ app.get('/firstpage',async (req,res) => {
   } 
 })
 
-app.post('/createRoom', (req, res) => {
+app.post('/createRoom', async (req, res) => {
   const roomId = uuidV4()
   const room_name = req.body.room_name
   const user_name = req.body.user_name
@@ -61,38 +61,64 @@ app.post('/createRoom', (req, res) => {
   req.session.room_name = room_name
   req.session.user_name = user_name
   req.session.room_desc = room_desc
+  req.session.from_create = true
   res.redirect(`/${roomId}`)
 })
 
-app.get('/:room',async (req,res) => {
+app.get('/:room', async (req,res) => {
   var user_name = req.session.user_name
   var room_desc = req.session.room_desc
   var room_name = req.session.room_name
-  var speakers = {}
-  var members = {}
+  var from_create = req.session.from_create
+  var speakers = []
+  var members = []
   console.log("user_name"+user_name)
   if(user_name == undefined){
     res.redirect("/firstpage")
   }
   else {
     try {
-      const roommodel = await Rooms.find({roomid : req.params.room}, async function(err,room){
+      const roommodel = await Rooms.findOne({roomid : req.params.room}, function(err,room){
         if(err)
         {
           throw err
         }
         else {
-          if(room_name == undefined){
+          if(room_name == undefined && room != null){
             room_name = room.roomName
           }
-          if(room_desc == undefined){
+          if(room_desc == undefined && room != null){
             room_desc = room.roomDesc
           }
-          console.log(room)
-          speakers = room.speakers
-          members = room.members 
-          console.log(speakers)
-          console.log(members)
+          if(room == undefined && from_create){
+            var obj = {}
+            obj['user_name'] = user_name
+            speakers.push(obj) 
+          }
+          else {
+            if(room.speakers.length > 0){
+              for(var i in room.speakers){
+                var obj = {}
+                obj['user_name'] = room.speakers[i].user_name
+                speakers.push(obj)
+              }
+            }
+
+            if(room.members.length > 0){
+              for(var i in room.members){
+                var obj = {}
+                obj['user_name'] = room.members[i].user_name
+                members.push(obj)
+              }
+            }
+            else {
+              if(from_create == undefined){
+                var obj = {}
+                obj['user_name'] = room.members[i].user_name
+                members.push(obj)
+              }
+            }
+          }
           res.render('room', { roomId: req.params.room , room_name : room_name , user_name : user_name , room_desc : room_desc ,speakers : speakers , members : members})  
         }
       })
@@ -103,11 +129,21 @@ app.get('/:room',async (req,res) => {
   }
 })
 
-app.post('/joinRoom',(req,res) => {
+app.post('/joinRoom', async (req,res) => {
   const room_url = req.body.room_url
   const join_name = req.body.join_name
   req.session.user_name = join_name
+  req.session.from_join = true
   res.redirect(`/${room_url}`)
+})
+
+app.get('/inviteSpeaker/:room',async (req,res) => {
+  const room_url = req.params.get('room')
+  res.render("inviteSpeaker",{roomId : room_url})
+})
+
+app.post('/inviteSpeaker', async(req,res) => {
+  const room_url = req.body.room_url
 })
 
 io.on('connection', socket => {
@@ -221,7 +257,7 @@ io.on('connection', socket => {
           }
         }
       })
-        socket.to(roomId).broadcast.emit('user-disconnected', userId)
+      socket.to(roomId).broadcast.emit('user-disconnected', userId)
     })
   })
 

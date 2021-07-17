@@ -10,6 +10,7 @@
     const USER_NAME = "<%= user_name %>"
     const ROOM_DESC = "<%= room_desc %>"
   </script>
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"> 
   <!-- <link rel="stylesheet" href="style.css"> -->
   <script defer src="https://unpkg.com/peerjs@1.2.0/dist/peerjs.min.js"></script>
@@ -102,22 +103,29 @@
 
         </div>
         <div class = "speaker">
-            <h2>Speakers</h2>
             <div class = "speaker-container">
-                <%- speakers %>
+                <h2>Speakers</h2>
+                <% isone_of_the_speaker = false %>
                 <% if(speakers != undefined && speakers.length > 0) { %>
                   <div class = "speaker-name-container">                    
                     <% speakers.forEach(function(speaker){ %>
                       <h4> <%- speaker.user_name %></h4>
+                        <% if(speaker.user_name ==  user_name ) {%>
+                          <% isone_of_the_speaker = true %>
+                        <% }%>
                     <% }); %>
                   </div>
+              <% } %>
+            </div>
+            <div class="">
+              <% if(isone_of_the_speaker){ %>
+                <button class="btn btn-primary addspeaker" data-target="#"> + Add Speaker</button>
               <% } %>
             </div>
         </div>
 
         <div class = "member">
           <div class = "member-container">
-            <%- members %>
             <% if(members != undefined && members.length > 0) { %>
               <h2>Members</h2>
                 <% members.forEach(function(member){ %>
@@ -137,6 +145,23 @@
         </div>
       </div>
    </div>
+
+   <!-- add speaker modal -->
+  <div class="modal fade" id="create_room_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="form-group">
+                    <label class="font-weight-bold" for="room_name">Copy the Link</label>
+                    <input type="text" class="form-control room_name" name="room_name" value="/inviteSpeaker/<% roomId %>" required>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 <script src="script.js" defer></script>
 </html>
