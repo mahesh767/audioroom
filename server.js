@@ -20,6 +20,10 @@ try {
 
 const Rooms = require('./models/Rooms')
 
+const { PeerServer } = require('peer');
+
+const peerServer = PeerServer({ port: 9000});
+
 app.use(session({secret: 'mySecret', resave: false, saveUninitialized: false}));
 app.set('view engine', 'ejs')
 app.use(express.static('public'))

@@ -6,7 +6,8 @@
       { url: 'turn:3.108.53.55?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' }
     ]},
     secure : true,
-    host: 'http://ec2-13-232-222-167.ap-south-1.compute.amazonaws.com',
+    // host: 'http://ec2-13-232-222-167.ap-south-1.compute.amazonaws.com',
+    host : 'ec2-65-2-70-49.ap-south-1.compute.amazonaws.com/',
     port: 9000,
   })
   let myVideoStream;
