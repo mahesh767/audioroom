@@ -12,142 +12,83 @@
   </script>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"> 
-  <!-- <link rel="stylesheet" href="style.css"> -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script defer src="https://unpkg.com/peerjs@1.2.0/dist/peerjs.min.js"></script>
   <script src="/socket.io/socket.io.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <title>Virtual Cafe</title>
   <style>
-    #video-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, 300px);
-      grid-auto-rows: 300px;
-      padding: 10px;
-      margin: 10px;
+    .navbar{
+      margin-bottom: 10%;
     }
-    .vid{
-      background:black;
-      height: 100%;
-      margin: 0;
-    }
-    .audio_node {
-      width: 100%;
-      height: 100%;
-      border : 1px solid black;
-    }
-    .leave_meeting{
-      justify-content: center;
-      align-items: center;
-      margin-left: 35%;
-      margin-top: 10%;
-      margin-bottom: 5%;
-      display: flex;
-    }
-    .center {
-      margin: 1px solid black;
-      margin: auto;
-      position: absolute;
-      top: 10%;
-      left : 20%;
-      width: 60%;
-      border: 1px solid black;
-    }
-    .member {
-      margin-top: 10%;
-    }
-    .center {
-      background: #ddebf0;
-    }
-    .speaker-name-container {
-      display: flex;
-    }
-    #muteUnmute{
-      background-color: #858382;
-      font-weight: bold;
-      width:80px;
-    }
-
-    #muteUnmute:hover{
-      background-color: #CDCCCB;
-      cursor : pointer;
-    }
-
-    .leaveButtonClass{
-      background-color: #BA2A0C;
-    }
-
-    .leaveButtonClass:hover{
-      background-color: #E04625;
-      cursor : pointer;
-    }
-
-    .fas{
-      font-size: 26px;
-    }
-
-    .mutebutton{
-      display: flex;
-      margin-right: 40%;
+    hr{
+      border-radius: 3px;
     }
   </style>
 </head>
 <body>
-  <div class = "center">
-      <nav class="navbar navbar-dark bg-dark">
-        <div class="container-fluid">
-            <h1 class="navbar-brand text-white"> <%- room_name %></h1>
-            <h3 class="navbar-brand text-white"> <%- room_desc %></h3>
-        </div>      
-      </nav>
-      <div class = "container">
-        <div id="video-grid">
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand text-white" href="/">Virtual Cafe</a>
+    </div>      
+  </nav>
 
-        </div>
-        <div class = "speaker">
-            <div class = "speaker-container">
-                <h2>Speakers</h2>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="offset-md-2 col-8">
+        <div class="card shadow p-3 mb-5 bg-white rounded">
+          <div class="card-header">
+            <h1><b><%- room_name %></b></h1>
+            <p><%- room_desc %></p>
+          </div>
+          <div class="card-body">
+            <div class="form-group" style="display: flex;">
+              <div class="speakers">
+                <h3><b>Speakers</b></h3>
+                <br>
                 <% isone_of_the_speaker = false %>
-                <% if(speakers != undefined && speakers.length > 0) { %>
-                  <div class = "speaker-name-container">                    
-                    <% speakers.forEach(function(speaker){ %>
-                      <h4> <%- speaker.user_name %></h4>
-                        <% if(speaker.user_name ==  user_name ) {%>
-                          <% isone_of_the_speaker = true %>
-                        <% }%>
-                    <% }); %>
-                  </div>
+                  <% if(speakers != undefined && speakers.length > 0) { %>
+                    <div class = "speaker-name-container">                    
+                      <% speakers.forEach(function(speaker){ %>
+                          <i class="far fa-user-circle"> <%- speaker.user_name %> </i>
+                          <% if(speaker.user_name ==  user_name ) {%>
+                            <% isone_of_the_speaker = true %>
+                          <% }%>
+                      <% }); %>
+                    </div>
+                <% } %>
+              </div>
+              <% if(isone_of_the_speaker) {  %>
+                <div class="invitespeakers" style="margin-left : 50%">
+                    <button class="btn btn-primary add_speaker" data-target="#add_speaker_modal" data-toggle="modal">+ Add Speaker</button>  
+                </div>
               <% } %>
             </div>
-            <div class="">
-              <% if(isone_of_the_speaker){ %>
-                <button class="btn btn-primary addspeaker" data-target="#"> + Add Speaker</button>
-              <% } %>
-            </div>
-        </div>
-
-        <div class = "member">
-          <div class = "member-container">
+            <hr class="mt-3 mb-3leaveButtonClass"/>
+            <br>
             <% if(members != undefined && members.length > 0) { %>
-              <h2>Members</h2>
+                <h3><b>Members</b></h3> 
                 <% members.forEach(function(member){ %>
-                <h4> <%- member.user_name %></h4>
-                <% });%>
+                  <% if(member.user_name != undefined && member.user_name != null) { %>
+                    <i class="far fa-user-circle form-group"> <%- member.user_name %></i>
+                    <br>
+                <% } });%>
             <% } %>
-          </div>
-        </div>
-        <div class="leave_meeting">
-          <div class="mutebutton">   
-            <i class="fas fa-microphone"></i>
-            <button id="muteUnmute" style="color: black; border-radius: 5px;" onclick="muteUnmute()">Mute</button>
-          </div>
-          <div class>
-            <button class="leaveButtonClass" style="color: white; border-radius: 5px;" onclick="leaveMeeting()">Leave Meeting</button>
-          </div>
+
+            <hr class="mt-3 mb-3leaveButtonClass"/>
+
+            <div class="text-center">
+              <button class="btn btn-primary" id="muteUnmute" onclick="muteUnmute()"><span><i class="fas fa-microphone"></i></span> Mute</button>
+              <button class="btn btn-danger" onclick="leaveMeeting()"><span><i class="fas fa-sign-out-alt"></i></span> Leave</button>
+            </div>
+          </div> 
         </div>
       </div>
-   </div>
+    </div>
+  </div>
 
-   <!-- add speaker modal -->
-  <div class="modal fade" id="create_room_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!-- add speaker modal -->
+  <div class="modal fade" id="add_speaker_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
@@ -156,12 +97,24 @@
                 </button>
                 <div class="form-group">
                     <label class="font-weight-bold" for="room_name">Copy the Link</label>
-                    <input type="text" class="form-control room_name" name="room_name" value="/inviteSpeaker/<% roomId %>" required>
+                    <input type="text" class="form-control speaker_join_link" name="room_name" value = "" required>
                 </div>
             </div>
         </div>
     </div>
-</div>
+  </div>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 <script src="script.js" defer></script>
+
+<script>
+  $(".add_speaker").on("click",function(e){
+    var url = window.location.origin
+    var patharray =  window.location.pathname.split( '/' );
+    console.log(patharray)
+    url = url + "/inviteSpeaker/"+ patharray[1]
+    $(".speaker_join_link").val(url)
+  })
+</script>
 </html>

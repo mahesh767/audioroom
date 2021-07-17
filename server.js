@@ -70,6 +70,7 @@ app.get('/:room', async (req,res) => {
   var room_desc = req.session.room_desc
   var room_name = req.session.room_name
   var from_create = req.session.from_create
+  var from_speaker = req.session.from_speaker
   var speakers = []
   var members = []
   console.log("user_name"+user_name)
@@ -89,6 +90,12 @@ app.get('/:room', async (req,res) => {
           }
           if(room_desc == undefined && room != null){
             room_desc = room.roomDesc
+          }
+
+          if(from_speaker){
+            var obj = {}
+            obj['user_name'] = user_name
+            speakers.push(obj)
           }
           if(room == undefined && from_create){
             var obj = {}
@@ -138,12 +145,18 @@ app.post('/joinRoom', async (req,res) => {
 })
 
 app.get('/inviteSpeaker/:room',async (req,res) => {
-  const room_url = req.params.get('room')
-  res.render("inviteSpeaker",{roomId : room_url})
+  const room_url = req.params.room
+  console.log(room_url)
+  res.render("invitespeaker",{roomId : room_url})
 })
 
 app.post('/inviteSpeaker', async(req,res) => {
   const room_url = req.body.room_url
+  const user_name = req.body.join_name
+  req.session.from_speaker = true
+  req.session.user_name = user_name
+  res.redirect(`${room_url}`)
+  
 })
 
 io.on('connection', socket => {

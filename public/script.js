@@ -65,7 +65,7 @@ function leaveMeeting(){
     audio.addEventListener('loadedmetadata', () => {
       audio.play()
     })
-    videoGrid.appendChild(audio)
+    //videoGrid.appendChild(audio)
   }
 
   function createAudioNode(){
@@ -76,28 +76,10 @@ function leaveMeeting(){
   const muteUnmute = () => {
     const enabled = myVideoStream.getAudioTracks()[0].enabled;
     if (enabled) {
-      setUnmuteButton();
       myVideoStream.getAudioTracks()[0].enabled = false;
-      document.getElementById('muteUnmute').innerHTML="Unmute";
+      document.getElementById('muteUnmute').innerHTML = '<span><i class="fas fa-microphone-slash"></i></span> Unmute';
     } else {
-      setMuteButton();
-      document.getElementById('muteUnmute').innerHTML="Mute";
+      document.getElementById('muteUnmute').innerHTML='<span><i class="fas fa-microphone"></i></span> Mute';
       myVideoStream.getAudioTracks()[0].enabled = true;
     }
-  }
-
-  const setMuteButton = () => {
-    const html = `
-    <i class="fas fa-microphone"></i>
-    <button id="muteUnmute" style="color: black; border-radius: 5px;" onclick="muteUnmute()">Mute</button>
-    `
-    document.querySelector('.mutebutton').innerHTML = html;
-  }
-
-  const setUnmuteButton = () => {
-    const html = `
-    <i class="Unmute fas fa-microphone-slash"></i>
-    <button id="muteUnmute" style="color: black; border-radius: 5px;" onclick="muteUnmute()">Unmute</button>
-    `
-    document.querySelector('.mutebutton').innerHTML = html;
   }
