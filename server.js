@@ -37,9 +37,14 @@ app.get('/firstpage',async (req,res) => {
       if(err){
         throw err
       }
-    room.forEach(function(Room){
-      user_map.push({users:Room.users , room_name : Room.roomName , room_count : Room.users.length, link: "http://localhost:3000/"+Room.roomid}) 
-    })
+     for(var i in room){
+       var obj = {}
+       obj['created_by'] = room[i].created_by
+       obj['roomName'] = room[i].roomName
+       obj['roomDesc'] = room[i].roomDesc
+       obj['room_link'] = room[i].roomid
+       user_map.push(obj)
+     }
     res.render('firstpage',{user_map : user_map})
   })
   }
@@ -60,40 +65,54 @@ app.post('/createRoom', (req, res) => {
 })
 
 app.get('/:room',async (req,res) => {
-  var room_name = req.session.room_name
   var user_name = req.session.user_name
-  // if(room_name == undefined){
-  //   try {
-  //     room_name = await Rooms.find({roomid : req.params.room},function(err,res){
-  //       if(err)
-  //         throw err
-  //       else 
-  //       room_name = res.roomName
-  //     })
-  //   }
-  //   catch(err){
-  //     console.log(err)
-  //   }
-  // }
-  // if(user_name == undefined){
-  //   user_name = "anonymous"
-  // }
-  res.render('room', { roomId: req.params.room , room_name : room_name , user_name : user_name})
+  var room_desc = req.session.room_desc
+  var room_name = req.session.room_name
+  var speakers = {}
+  var members = {}
+  console.log("user_name"+user_name)
+  if(user_name == undefined){
+    res.redirect("/firstpage")
+  }
+  else {
+    try {
+      const roommodel = await Rooms.find({roomid : req.params.room}, async function(err,room){
+        if(err)
+        {
+          throw err
+        }
+        else {
+          if(room_name == undefined){
+            room_name = room.roomName
+          }
+          if(room_desc == undefined){
+            room_desc = room.roomDesc
+          }
+          console.log(room)
+          speakers = room.speakers
+          members = room.members 
+          console.log(speakers)
+          console.log(members)
+          res.render('room', { roomId: req.params.room , room_name : room_name , user_name : user_name , room_desc : room_desc ,speakers : speakers , members : members})  
+        }
+      })
+    }
+    catch(err){
+      console.log(err)
+    }
+  }
 })
 
 app.post('/joinRoom',(req,res) => {
-  console.log(req.body)
   const room_url = req.body.room_url
   const join_name = req.body.join_name
   req.session.user_name = join_name
-  req.session.room_name = ""
-  res.redirect(room_url)
+  res.redirect(`/${room_url}`)
 })
 
 io.on('connection', socket => {
-  socket.on('join-room', async (roomId, userId , roomname, username , isspeaker) => {
+  socket.on('join-room', async (roomId, userId , roomname, username , room_desc , isspeaker) => {
     console.log("connected")
-    const update = {"$push" : {"users" : userId},"roomName" : roomname}
     try {
       const Roommodel = await Rooms.findOne({roomid: roomId},async function(err,res){
         if(res == undefined){
@@ -102,8 +121,9 @@ io.on('connection', socket => {
           user_obj['user_name'] = username
           var createroom = new Rooms()
           createroom.roomid = roomId
-          createroom.roomname = roomname
+          createroom.roomName = roomname
           createroom.users = user_obj
+          createroom.roomDesc = room_desc
           createroom.created = new Date()
           createroom.speakers = user_obj
           createroom.members = {}

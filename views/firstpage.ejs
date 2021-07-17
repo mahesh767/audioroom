@@ -32,17 +32,43 @@
                 <div class="col-6">
                     <div class="card shadow p-3 mb-5 bg-white rounded">
                         <div class="card-header">
-                            <%- user.room_name%> <%- user%>
+                            <%- user.roomName%> <%- user.created_by%>
                         </div>
                         <div class="card-body">
-                          <!-- <p class="card-text"><%- user.room_desc%></p> -->
+                          <p class="card-text"><%- user.roomDesc%></p>
                           <div class="text-center">
-                            <a href="<%- user.link%>" class="btn btn-primary">Join</a>
+                            <a href = "#"  class="btn btn-primary join_button" data-toggle="modal" data-target="#join_room_modal_<%- user.room_link%>">Join</a>
                           </div>
+                        </div>
+                        <!-- Join Room Modal -->
+                        <div id = "join_room_modal_<%- user.room_link%>"  class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action = "/joinRoom" , method="post">
+                                        <div class="modal-body">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <div class="form-group">
+                                                <h3>Join Room</h3>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="font-weight-bold" for = "join_name">Enter Your Name</label>
+                                                <input type = "text" class="form-control join_name" name = "join_name" value = "" required>
+                                            </div>
+                                            <div class="text-center">
+                                                <button type="submit" class="btn btn-primary join_submit">Submit</button>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="hidden" name = "room_url" value = "<%- user.room_link%>">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- <li class="room_names"><%- user.room_name%> </li> -->
                 <% }); %>
             <% } else { %>
                 <li>There are no active Rooms . You can create One </li>
@@ -78,24 +104,6 @@
             </div>
         </div>
     </div>
-
-
-    <!-- Join Room Modal -->
-    <div id = "join_room_modal" class = "modal">
-        <div class="modal-content">
-            <form action = "/joinRoom" , method="post" onsubmit="return joinRoomValidation()">
-                <span class="close">&times</span>
-                <h3>Join Room</h3>
-                <p>Paste the Url Of the Room</p>
-                <input type = "text" name = "room_url" class="room_url">
-                <p>Entter Your Name</p>
-                <input type = "text" name = "join_name" class="join_name">
-                <input type = "checkbox" class="isanonymous">
-                <label>Join Anonymously</label>
-                <button class="join_submit" type="submit">Submit</button>
-            </form>
-        </div>
-    </div>
 </body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
@@ -103,7 +111,6 @@
         function createRoomValidation(){
             var room_name = $(".room_name").val();
             var user_name = $(".user_name").val();
-            var is_anonymous = $(".isanonymous").is(":checked");
             if(room_name == undefined || room_name == ""){
                 alert("Enter the Room Name")
                 return false;
@@ -116,12 +123,7 @@
         }
 
         function joinRoomValidation() {
-            var room_url = $(".room_url").val();
             var join_name = $(".join_name").val();
-            if(room_url == undefined || room_url == ""){
-                alert("Enter the Room Url")
-                return false
-            }
             if(!is_anonymous && (user_name == undefined || user_name == "")){
                 alert("Enter the UserName")
                 return false;
