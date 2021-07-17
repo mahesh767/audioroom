@@ -6,8 +6,8 @@
       { url: 'turn:3.108.53.55?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' }
     ]},
     secure : true,
-    host: 'virtualcafepeerjs.herokuapp.com',
-    port: 443,
+    host: 'http://ec2-13-232-222-167.ap-south-1.compute.amazonaws.com',
+    port: 9000,
   })
   let myVideoStream;
   const audio = createAudioNode()
