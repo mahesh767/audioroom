@@ -2,7 +2,6 @@
   const videoGrid = document.getElementById('video-grid')
   const myPeer = new Peer({
     config: {'iceServers': [
-      { urls: 'stun:stun.l.google.com:19302' },
       { urls: 'turn:52.66.190.178?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' }
     ]},
     secure : true,
