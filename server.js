@@ -73,6 +73,8 @@ app.get('/:room', async (req,res) => {
   var from_speaker = req.session.from_speaker
   var speakers = []
   var members = []
+  var isspeaker = undefined
+  var ismember = undefined
   console.log("user_name"+user_name)
   if(user_name == undefined){
     res.redirect("/firstpage")
@@ -96,11 +98,13 @@ app.get('/:room', async (req,res) => {
             var obj = {}
             obj['user_name'] = user_name
             speakers.push(obj)
+            isspeaker = true
           }
           if(room == undefined && from_create){
             var obj = {}
             obj['user_name'] = user_name
             speakers.push(obj) 
+            isspeaker = true
           }
           else {
             if(room.speakers.length > 0){
@@ -123,10 +127,11 @@ app.get('/:room', async (req,res) => {
                 var obj = {}
                 obj['user_name'] = room.members[i].user_name
                 members.push(obj)
+                ismember = true
               }
             }
           }
-          res.render('room', { roomId: req.params.room , room_name : room_name , user_name : user_name , room_desc : room_desc ,speakers : speakers , members : members})  
+          res.render('room', { roomId: req.params.room , room_name : room_name , user_name : user_name , room_desc : room_desc ,speakers : speakers , members : members , isspeaker : isspeaker , ismember : ismember})  
         }
       })
     }
