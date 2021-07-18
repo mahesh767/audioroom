@@ -6,7 +6,7 @@
       { urls: 'turn:52.66.190.178?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' }
     ]},
     secure : true,
-    host : "virtualcafepeerjs.herokuapp.com/",
+    host : "virtualcafepeerjs.herokuapp.com",
     debug : 3,
   })
 
