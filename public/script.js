@@ -2,8 +2,8 @@
   const videoGrid = document.getElementById('video-grid')
   const myPeer = new Peer({
     config: {'iceServers': [
-      { urls: 'turn:52.66.196.228?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' },
-      { urls: 'turn:52.66.196.228?transport=udp', username : 'virtualcafe' , credential: 'virtualcafe' }
+      { urls: 'turn:65.2.10.63?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' },
+      { urls: 'turn:65.2.10.63?transport=udp', username : 'virtualcafe' , credential: 'virtualcafe' }
     ]},
     secure : true,
     host : "virtualcafepeerjs.herokuapp.com",
