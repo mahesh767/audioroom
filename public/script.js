@@ -2,38 +2,16 @@
   const videoGrid = document.getElementById('video-grid')
   const myPeer = new Peer({
     config: {'iceServers': [
-      { urls: 'turn:65.2.33.97?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' },
-      { urls: 'turn:65.2.33.97?transport=udp', username : 'virtualcafe' , credential: 'virtualcafe' }
+      { urls: 'turn:65.2.143.236?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' },
+      { urls: 'turn:65.2.143.236?transport=udp', username : 'virtualcafe' , credential: 'virtualcafe' },
+      { url: 'turn:65.2.143.236?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' },
+      { url: 'turn:65.2.143.236?transport=udp', username : 'virtualcafe' , credential: 'virtualcafe' },
     ]},
     secure : true,
     host : "virtualcafepeerjs.herokuapp.com",
     debug : 3,
   })
 
-
-  var heartbeater = makePeerHeartbeater( myPeer );
-
-  function makePeerHeartbeater ( peer ) {
-      var timeoutId = 0;
-      function heartbeat () {
-          timeoutId = setTimeout( heartbeat, 20000 );
-          if ( peer.socket._wsOpen() ) {
-              peer.socket.send( {type:'HEARTBEAT'} );
-          }
-      }
-      // Start 
-      heartbeat();
-      // return
-      return {
-          start : function () {
-              if ( timeoutId === 0 ) { heartbeat(); }
-          },
-          stop : function () {
-              clearTimeout( timeoutId );
-              timeoutId = 0;
-          }
-      };
-  }
 
 
   let myVideoStream;
