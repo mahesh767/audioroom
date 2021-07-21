@@ -2,6 +2,7 @@
   const videoGrid = document.getElementById('video-grid')
   const myPeer = new Peer({
     config: {'iceServers': [
+      {urls: "stun:stun.l.google.com:19302"},
       { urls: 'turn:65.2.143.236?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' },
       { urls: 'turn:65.2.143.236?transport=udp', username : 'virtualcafe' , credential: 'virtualcafe' },
       { url: 'turn:65.2.143.236?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' },
@@ -131,3 +132,35 @@ function leaveMeeting(){
       myVideoStream.getAudioTracks()[0].enabled = true;
     }
   }
+
+
+  setInterval(() => {
+    var data = {room_url : ROOM_ID}
+    console.log(data)
+    $.ajax({
+      'type' : "POST",
+      'dataType' : "json",
+      'url' : '/getSpeakersAndMembers',
+      'data' : data,
+      'success' : function(data){
+        if(data.status === "1"){
+          if(data.speaker_res.length != 0){
+            $(".speaker-name-container").html("");
+            data.speaker_res.forEach(function(speaker){
+              var html = '<i class = "far fa-user-circle form-group"> '+ speaker.user_name +' </i><br>';
+              $(".speaker-name-container").append(html)
+            })
+          }
+          if(data.members_res.length != 0){
+            $(".members-container").html("");
+            data.members_res.forEach(function(member){
+              if(member.user_name != undefined){
+                var html = '<i class = "far fa-user-circle form-group"> '+ member.user_name +' </i><br>';
+                $(".members-container").append(html)
+              }
+            })
+          }
+        }
+      }
+    })
+  },3000);

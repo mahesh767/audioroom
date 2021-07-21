@@ -54,6 +54,7 @@
                     <div class = "speaker-name-container">                    
                       <% speakers.forEach(function(speaker){ %>
                           <i class="far fa-user-circle" id = "<%- speaker.user_id %>"> <%- speaker.user_name %> </i>
+                          <br>
                           <% if(speaker.user_name ==  user_name ) {%>
                             <% isone_of_the_speaker = true %>
                           <% }%>
@@ -69,9 +70,9 @@
             </div>
             <hr class="mt-3 mb-3leaveButtonClass"/>
             <br>
+            <h3><b>Members</b></h3> 
             <div class="members-container">
               <% if(members != undefined && members.length > 0) { %>
-                  <h3><b>Members</b></h3> 
                   <% members.forEach(function(member){ %>
                     <% if(member.user_name != undefined && member.user_name != null) { %>
                       <i class="far fa-user-circle form-group" id = "<%- member.user_id %>"> <%- member.user_name %></i>
