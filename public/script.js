@@ -3,10 +3,10 @@
   const myPeer = new Peer({
     config: {'iceServers': [
       {urls: "stun:stun.l.google.com:19302"},
-      { urls: 'turn-65.1.65.193?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' },
-      { urls: 'turn-65.1.65.193?transport=udp', username : 'virtualcafe' , credential: 'virtualcafe' },
-      { url: 'turn-65.1.65.193?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' },
-      { url: 'turn-65.1.65.193?transport=udp', username : 'virtualcafe' , credential: 'virtualcafe' },
+      { urls: 'turn:65.1.65.193?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' },
+      { urls: 'turn:65.1.65.193?transport=udp', username : 'virtualcafe' , credential: 'virtualcafe' },
+      { url: 'turn:65.1.65.193?transport=tcp', username : 'virtualcafe' , credential: 'virtualcafe' },
+      { url: 'turn:65.1.65.193?transport=udp', username : 'virtualcafe' , credential: 'virtualcafe' },
     ]},
     secure : true,
     host : "virtualcafepeerjs.herokuapp.com",
