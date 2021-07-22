@@ -55,6 +55,10 @@
     })
   })
 
+  socket.on('user-disconnected', userId => {
+    if (peers[userId]) peers[userId].close()
+  })
+
 function leaveMeeting(){
   console.log("leaveMeeting")
   socket.on('user-disconnected', userId => {
@@ -100,26 +104,11 @@ function leaveMeeting(){
     audio.addEventListener('loadedmetadata', () => {
       audio.play()
     })
-    people  = createPeople(userId,USER_NAME)
-    if(ISSPEAKER){
-      $('.speakers').append(people)
-    }
-    else {
-      $('.members').append(people)
-    }
   }
 
   function createAudioNode(){
     audio_element = document.createElement('audio')
     return audio_element
-  }
-
-  function createPeople(userId,USER_NAME){
-    var node = document.createElement("i")
-    node.className = 'far fa-user-circle'
-    node.innerHTML = USER_NAME
-    node.id = userId
-    return node
   }
 
   const muteUnmute = () => {
@@ -145,21 +134,29 @@ function leaveMeeting(){
       'success' : function(data){
         if(data.status === "1"){
           if(data.speaker_res.length != 0){
-            $(".speaker-name-container").html("");
+            $(".speaker-name-container").html('');
             data.speaker_res.forEach(function(speaker){
               var html = '<i class = "far fa-user-circle form-group"> '+ speaker.user_name +' </i><br>';
-              $(".speaker-name-container").append(html)
-            })
-          }
-          if(data.members_res.length != 0){
-            $(".members-container").html("");
-            data.members_res.forEach(function(member){
-              if(member.user_name != undefined){
-                var html = '<i class = "far fa-user-circle form-group"> '+ member.user_name +' </i><br>';
-                $(".members-container").append(html)
+              if($(".speaker-name-container") != null){
+                $(".speaker-name-container").append(html);
               }
             })
           }
+          if(data.members_res.length != 0){
+            $(".members-container").html('');
+            data.members_res.forEach(function(member){
+              if(member.user_name != undefined){
+                var html = '<i class = "far fa-user-circle form-group"> '+ member.user_name +' </i><br>';
+                if($(".members-container") != null){
+                  $(".members-container").append(html);
+                }
+              }
+            })
+          }
+        }
+        else {
+          window.location.reload();
+          return false;
         }
       }
     })

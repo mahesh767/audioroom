@@ -53,8 +53,6 @@
                   <% if(speakers != undefined && speakers.length > 0) { %>
                     <div class = "speaker-name-container">                    
                       <% speakers.forEach(function(speaker){ %>
-                          <i class="far fa-user-circle" id = "<%- speaker.user_id %>"> <%- speaker.user_name %> </i>
-                          <br>
                           <% if(speaker.user_name ==  user_name ) {%>
                             <% isone_of_the_speaker = true %>
                           <% }%>
@@ -75,8 +73,6 @@
               <% if(members != undefined && members.length > 0) { %>
                   <% members.forEach(function(member){ %>
                     <% if(member.user_name != undefined && member.user_name != null) { %>
-                      <i class="far fa-user-circle form-group" id = "<%- member.user_id %>"> <%- member.user_name %></i>
-                      <br>
                   <% } });%>
               <% } %>
             </div>

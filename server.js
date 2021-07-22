@@ -166,6 +166,10 @@ app.post('/inviteSpeaker', async (req, res) => {
 app.post('/getSpeakersAndMembers',async(req,response) => {
   const room_url = req.body.room_url
   const Roommodel = Rooms.findOne({roomid : room_url}).then((res) => {
+    if(res == null){
+      response.send({status : "0"})
+      return
+    }
     const speakers = res.speakers
     const members = res.members
     var speakers_res = [] 
@@ -246,10 +250,7 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
       const filter = { roomid: roomId }
       const Roommodel = Rooms.findOne(filter).then((res) => {
-        if (res == undefined) {
-          console.log(err)
-        }
-        else if (res != undefined) {
+        if(res != undefined) {
           $update = {}
           $remove = false
           $is_found_in_speaker = false
