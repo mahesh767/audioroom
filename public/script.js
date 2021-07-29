@@ -26,6 +26,7 @@
     myVideoStream = stream;
     console.log("issspeaker  " + ISSPEAKER);
     if(ISSPEAKER != undefined && ISSPEAKER != ""){
+      console.log("should not come here")
       addVideoStream(audio, stream)
     }
 
