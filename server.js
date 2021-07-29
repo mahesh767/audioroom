@@ -44,7 +44,7 @@ app.get("/", async (req, res) => {
 })
 
 app.get("/favicon.ico" , async(req,res) => {
-  res.status(204)
+  res.send({"status" : "ok"})
 })
 
 app.get("/getMembers" , async(req,mainresponse) => {
