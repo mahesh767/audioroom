@@ -18,6 +18,11 @@
   <script defer src="https://unpkg.com/peerjs@1.2.0/dist/peerjs.min.js"></script>
   <script src="/socket.io/socket.io.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js" integrity="sha512-n/4gHW3atM3QqRcbCn6ewmpxcLAHGaDjpEBu4xZd47N0W2oQ+6q7oc3PXstrJYXcbNU1OHdQ1T7pAP+gi5Yu8g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js" integrity="sha512-rMGGF4wg1R73ehtnxXBt5mbUfN9JUJwbk21KMlnLZDJh7BkPmeovBuddZCENJddHYYMkCh9hPFnPmS9sspki8g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.min.js" integrity="sha512-lUZZrGg8oiRBygP81yUZ4XkAbmeJn7u7HW5nq7npQ+ZXTRvj3ErL6y1XXDq6fujbiJlu6gHsgNUZLKE6eSDm8w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.min.css" integrity="sha512-YWDtZYKUekuPMIzojX205b/D7yCj/ZM82P4hkqc9ZctHtQjvq3ei11EvAmqxQoyrIFBd9Uhfn/X6nJ1Nnp+F7A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.css" integrity="sha512-0nkKORjFgcyxv3HbE4rzFUlENUMNqic/EzDIeYCgsKa/nwqr2B91Vu/tNAu4Q0cBuG4Xe/D1f/freEci/7GDRA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
   <title>Virtual Cafe</title>
   <style>
@@ -27,6 +32,85 @@
     hr{
       border-radius: 3px;
     }
+    a {
+      text-decoration: none;
+    }
+    li {
+      list-style: none;
+    }
+    .ui-autocomplete-input {
+    border: none; 
+    font-size: 14px;
+    width: 300px;
+    height: 24px;
+    margin-bottom: 5px;
+    padding-top: 2px;
+    border: 1px solid #DDD !important;
+    padding-top: 0px !important;
+    z-index: 1511;
+    position: relative;
+  }
+  .ui-menu .ui-menu-item a {
+    font-size: 12px;
+  }
+  .ui-autocomplete {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1510 !important;
+    float: left;
+    display: none;
+    min-width: 160px;
+    width: 160px;
+    padding: 4px 0;
+    margin: 2px 0 0 0;
+    list-style: none;
+    background-color: #ffffff;
+    border-color: #ccc;
+    border-color: rgba(0, 0, 0, 0.2);
+    border-style: solid;
+    border-width: 1px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+    *border-right-width: 2px;
+    *border-bottom-width: 2px;
+  }
+  .ui-menu-item > a.ui-corner-all {
+      display: block;
+      padding: 3px 15px;
+      clear: both;
+      font-weight: normal;
+      line-height: 18px;
+      color: #555555;
+      white-space: nowrap;
+      text-decoration: none;
+  }
+  .ui-state-hover, .ui-state-active {
+        color: #ffffff;
+        text-decoration: none;
+        background-color: #0088cc;
+        border-radius: 0px;
+        -webkit-border-radius: 0px;
+        -moz-border-radius: 0px;
+        background-image: none;
+  }
+  #modalIns{
+      width: 500px;
+  }
+  .ui-helper-hidden-accessible {
+    display: none;
+  }
+  #make_speakers{
+    float: right;
+    margin: 10px;
+  }
   </style>
 </head>
 <body>
@@ -62,7 +146,7 @@
               </div>
               <% if(isone_of_the_speaker) {  %>
                 <div class="invitespeakers" style="margin-left : 50%">
-                    <button class="btn btn-primary add_speaker" data-target="#add_speaker_modal" data-toggle="modal">+ Add Speaker</button>  
+                    <button class="btn btn-primary add_speaker" data-target="#add_speaker_modal" data-toggle="modal" data-backdrop = "static" data-keyboard="false">+ Invite Speaker</button>  
                 </div>
               <% } %>
             </div>
@@ -80,7 +164,9 @@
             <hr class="mt-3 mb-3leaveButtonClass"/>
 
             <div class="text-center">
-              <button class="btn btn-primary" id="muteUnmute" onclick="muteUnmute()"><span><i class="fas fa-microphone"></i></span> Mute</button>
+              <% if(isone_of_the_speaker) { %>
+                <button class="btn btn-primary" id="muteUnmute" onclick="muteUnmute()"><span><i class="fas fa-microphone"></i></span> Mute</button>
+              <% } %>
               <button class="btn btn-danger" onclick="leaveMeeting()"><span><i class="fas fa-sign-out-alt"></i></span> Leave</button>
             </div>
           </div> 
@@ -90,33 +176,198 @@
   </div>
 
   <!-- add speaker modal -->
-  <div class="modal fade" id="add_speaker_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal" id="add_speaker_modal" tabindex="-1"  aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-body">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <div class="form-group">
-                    <label class="font-weight-bold" for="room_name">Copy the Link</label>
-                    <input type="text" class="form-control speaker_join_link" name="room_name" value = "" required>
-                </div>
-            </div>
+            <form action="/makeSpeakers" , method="post">
+              <div class="modal-body">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+                  <div class="form-group">
+                    <input type="hidden" id = "abc2" value="">
+                    <div class="controls">
+                      <input id="employee-search-2" size="50" name="employee_search-2" value = "" placeholder="Search Employees">
+                      <span class="help-block">
+                      </span>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <input type="hidden" name="speaker_join_link" value="">
+                    <button class="btn btn-primary" id="make_speakers" type="submit">Invite Speakers</button>
+                  </div>
+              </div>
+            </form>
         </div>
     </div>
   </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-autocomplete/1.0.7/jquery.auto-complete.js" integrity="sha512-0S+JjjxMnAriopQSmNRKOv0C6dYCUwOH0QW01anAi5NSepBIRj95F5XmMo3tJuy5huYjLW8OUnF0ZjgJmyU8Wg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-autocomplete/1.0.7/jquery.auto-complete.css" integrity="sha512-uq8QcHBpT8VQcWfwrVcH/n/B6ELDwKAdX4S/I3rYSwYldLVTs7iII2p6ieGCM13QTPEKZvItaNKBin9/3cjPAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="script.js" defer></script>
 
 <script>
-  $(".add_speaker").on("click",function(e){
-    var url = window.location.origin
-    var patharray =  window.location.pathname.split( '/' );
-    console.log(patharray)
-    url = url + "/inviteSpeaker/"+ patharray[1]
-    $(".speaker_join_link").val(url)
+$(function() {
+
+
+  /// copied from Dashboard controller 
+
+  function split( val ) {
+    return val.split( /,\s*/ );
+  }
+  function extractLast( term ) {
+    return split( term ).pop();
+  }
+  $.fn.createEmpTagInput = function(outputID, company_filter, grp_cmp_id){
+    company_filter = company_filter || false;
+    grp_cmp_id = grp_cmp_id || null;
+    $myParent = $(this).parent();
+    $meItSelf = $(this);
+    var value_store =[];
+    var prevLable, prevId
+    if(typeof $('#'+outputID).val() != "undefined"){
+        $('#'+outputID).val($('#'+outputID).val().replace(/,+$/,''))
+    }
+    if($(this).val()!=="")
+        if(typeof $(this).val() !="undefined"){
+            prevLable = $(this).val().split(",");
+        }
+        if($('#'+outputID).val()!=="")
+            if(typeof $('#'+outputID).val() != "undefined"){
+                prevId = $('#'+outputID).val().replace(/,+$/,'').split(",");
+            }
+            var prevObject={}, prevObjectArr=[]
+            if(typeof prevLable !="undefined"){
+                for(var indx=0; indx<prevLable.length; indx++){
+                    prevObject = {
+                        "value" : prevLable[indx],
+                        "id" : [prevId[indx]],
+                        "email" : prevLable[indx]
+                    }
+                    prevObjectArr.push(prevObject)
+                }
+            }
+            $(this).on('tokenfield:edittoken',function (e) {
+                e.preventDefault();
+            })
+            .on('tokenfield:removedtoken',function (e) {
+                value_store = []
+                $(this).tokenfield('getTokens').forEach(function(item){
+                    value_store.push(item.id[0])
+                })
+                $('#'+outputID).val(value_store.join())
+                $(this).closest('div').children('input.value-store').val(value_store.join())
+            }).tokenfield();
+            $(this).tokenfield('setTokens',prevObjectArr);
+
+            $(this).parent().css({
+                "height": "auto",
+                "min-height": "40px"
+            });
+            $myParent.find("input.token-input").css({
+                "margin-left": "-12px",
+                "padding-left": "12.55px",
+                "width" : "100%"                                        
+            });
+            $myParent.on("keydown", "input.token-input", function (event) {
+                if (event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) { 
+                    event.preventDefault();
+                }
+                $(this).width($(this).closest("div").parent().width());
+                $(this).autocomplete({
+                    source: function (request, response) {
+                        var searchinput = this.term;
+                        var ids = {};
+                        var url = "/getSuggestions";
+                        $.getJSON(url, {
+                          searchinput: extractLast(searchinput)
+                        }, response);
+                    },
+                    search: function () {
+                        var searchTerm = $(this).val();
+                        var term = extractLast(searchTerm);
+                        if (term.length < 2) {
+                            return false;
+                        }
+                    },
+                    focus: function () {
+                        return false;
+                    },
+                    select: function (event, ui) {
+                      if($('#'+outputID).val()!=="" && $('#'+outputID).val() != undefined)
+                            value_store = $('#'+outputID).val().split(",");
+                        console.log(value_store)
+                        if(company_filter){
+                            value_store.push(ui.item.id.split("_").pop())
+                        }
+                        else{
+                            value_store.push(ui.item.id[0])
+                        }
+                        $('#'+outputID).val(value_store.join())
+                        $(this).width($(this).closest("div").parent().width()).attr("placeholder", "");
+                    },
+                    change: function (e, ui) {
+                    }
+                }).data("ui-autocomplete")._renderMenu = function( ul, items ) {
+                    var that = this,
+                    currentCategory = "";
+                    $.each( items, function( index, item ) {
+                        var li;
+                        li = that._renderItemData( ul, item );
+                        if ( item.email ) {
+                        li.attr( "aria-label", item.category + " : " + item.label );
+                        }
+                    });
+                    $( ul ).addClass( "global-search-autocomplete" );
+                };
+                $(this).data("ui-autocomplete")._renderItem = function( ul, item ) {
+                    var href = item.href ? item.href : 'javascript:void(0)';
+                    if(item.label != undefined){
+                      return $( "<li>" )
+                      .append( "<div class='search-item'><a href='"+href+"'>" + item.label + "</a> <input type = 'hidden' name = 'email' value = "+item.email+"></div>" )
+                      .appendTo( ul );  
+                    }
+                  };
+                }); // eof autocomplete 
+        };
+        $(document).ready(() => {
+          $('#employee-search-2').createEmpTagInput('abc2');
+        });
+
+});
+
+$("#make_speakers").on("click",function(e){
+  e.preventDefault();
+  var url = window.location.origin
+  var patharray =  window.location.pathname.split( '/' );
+  url = url + "/inviteSpeaker/"+ patharray[1]
+  $user_emails = $("#abc2").val();
+  if($user_emails == "" || $user_emails == undefined){
+    alert("please select a speaker")
+    return;
+  }
+  else {
+    $user_emails = $user_emails.split(",")
+  }
+
+  $.ajax({
+    type : "POST",
+    dataType : "json",
+    data : {url : url , user_emails : $user_emails},
+    url : '/sendEmails',
+    success : function(data){ 
+      if(data.status == "success"){
+        alert("Speakers Are Invited successfully"),
+        $("#add_speaker_modal").modal('toggle')
+      }
+      else {
+        alert("Something went wrong");
+        $("#add_speaker_modal").modal('toggle')
+      }
+    }
   })
+})
 </script>
 </html>

@@ -6,6 +6,8 @@ const { v4: uuidV4 } = require('uuid')
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const mongoose = require('mongoose')
+const request = require('request')
+const nodemailer = require('nodemailer');
 const DBCONNECTION_URL = "mongodb+srv://darwin:darwin@cluster0.ismdm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 try {
   mongoose.connect(
@@ -20,14 +22,47 @@ try {
 
 const Rooms = require('./models/Rooms')
 
+var transport = nodemailer.createTransport({
+  host: "smtp.mailtrap.io",
+  port: 2525,
+  auth: {
+    user: "c127613cab7c5e",
+    pass: "32a37538ce66af"
+  }
+});
+
 app.use(session({ secret: 'mySecret', resave: false, saveUninitialized: false }));
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.get("/", (req, res) => {
+
+
+app.get("/", async (req, res) => {
   res.redirect("/firstpage")
+})
+
+app.get("/getMembers" , async(req,mainresponse) => {
+  const room_id = "a991fa6a-af7f-4118-b5f7-32e6f8e43d0e"
+  const room = Rooms.findOne({roomid : room_id}).then((res) => {
+      var members = []
+      console.log(res)
+      if(res.members.length > 0){
+        for(var i in res.members){
+          if(res.members[i].user_id != undefined){
+            var obj = {}
+            obj['user_id'] = res.members[i].user_id
+            obj['user_name'] = res.members[i].user_name
+            members.push(obj)
+          }
+        }
+      }
+      mainresponse.send({"members" : members})
+  })
+  .catch(err => {
+    console.log(err)
+  })
 })
 
 app.get('/firstpage', async (req, res) => {
@@ -53,6 +88,86 @@ app.get('/firstpage', async (req, res) => {
   catch (err) {
 
   }
+})
+
+app.get('/getSuggestions', async (req,mainresponse) => {
+  var searchtext = req.query.searchinput
+  var body = {
+    "query": {
+        "query_string": {
+            "query": "*"+searchtext+"*",
+            "fields": [
+                "firstname^3",
+                "lastname^2",
+                "employee_no^1",
+                "department_wo_code",
+                "designation_wo_code",
+                "email",
+                "known_as_name"
+            ]
+        }
+    },
+    "sort": {
+        "firstname": {
+            "order": "asc"
+        }
+    },
+    "size": 100,
+    "filter": {
+        "and": [
+            {
+                "terms": {
+                    "status": [
+                        1
+                    ]
+                }
+            }
+        ]
+    }
+}
+  var resulthits = []
+  request({
+    "url" : "http://demo.darwinboxlocal.com:9200/2/user/_search",
+    "json" : true,
+    "body" : body,
+    "method" : "POST",
+    },
+    function(err,response){
+      if(err)
+      throw err
+      if(response.body.hits.total > 0){
+        var hitobjects = response.body.hits.hits
+        for(var i in hitobjects){
+          var obj = {}
+          obj['value'] = hitobjects[i]._source.fullname
+          obj['id'] = [hitobjects[i]._source.email]
+          resulthits.push(obj)
+        }
+      }
+      mainresponse.send(resulthits)
+    })
+})
+
+app.post("/sendEmails",async(req,mainresponse) => {
+  const url = req.body.url
+  const user_emails = req.body.user_emails
+  var message = {
+    from: "virtualcafe@darwinbox.com",
+    subject: "You have been invited to the Audio Room",
+    html: "<h1> Hello . You have been invited to the Audio Room.</h1> Please copy paste the url in browser of your choice . " + url
+  }
+  user_emails.forEach(val => {
+    message['to'] = val
+    transport.sendMail(message,function(err,res){
+      if(err){
+        console.log(err)
+      }
+      else {
+        console.log(res)
+      }
+    })
+  })
+  mainresponse.send({"status" : "success"})
 })
 
 app.post('/createRoom', async (req, res) => {
@@ -162,6 +277,21 @@ app.post('/inviteSpeaker', async (req, res) => {
   res.redirect(`${room_url}`)
 })
 
+app.post('/makeSpeakers',async (req,mainresponse) => {
+  const room_id = req.body.room_id
+  const user_id = req.body.user_id
+  const user_name = req.body.user_name
+  $update = {}
+  $update['$pull'] = { 'members': { 'user_id': user_id } }
+  $update['$push'] = { 'speakers' : { 'user_id' : user_id , 'user_name' : user_name }}
+  Rooms.findOneAndUpdate({ roomid: room_id }, $update).then((res) => {
+    console.log(res)
+  })
+  .catch((err) => {
+    console.log(err)
+  })
+  mainresponse.send("")
+})
 
 app.post('/getSpeakersAndMembers',async(req,response) => {
   const room_url = req.body.room_url
@@ -177,12 +307,14 @@ app.post('/getSpeakersAndMembers',async(req,response) => {
     for(var i in speakers){
       var obj = {}
       obj['user_name'] = speakers[i].user_name
+      obj['user_id'] = speakers[i].user_id
       speakers_res.push(obj)
     }
     for(var j in members){
       var obj = {}
       if(members[j].length != 0){
         obj['user_name'] = members[j].user_name
+        obj['user_id'] = members[j].user_id
         members_res.push(obj)
       }
     }
@@ -248,6 +380,7 @@ io.on('connection', socket => {
     socket.to(roomId).broadcast.emit('user-connected', userId)
 
     socket.on('disconnect', () => {
+      console.log("disconnnected")
       const filter = { roomid: roomId }
       const Roommodel = Rooms.findOne(filter).then((res) => {
         if(res != undefined) {

@@ -24,7 +24,8 @@
     audio: true
   }).then(stream => {
     myVideoStream = stream;
-    if(ISSPEAKER != undefined){
+    console.log("issspeaker  " + ISSPEAKER);
+    if(ISSPEAKER != undefined && ISSPEAKER != ""){
       addVideoStream(audio, stream)
     }
 
@@ -125,7 +126,6 @@ function leaveMeeting(){
 
   setInterval(() => {
     var data = {room_url : ROOM_ID}
-    console.log(data)
     $.ajax({
       'type' : "POST",
       'dataType' : "json",
@@ -137,6 +137,15 @@ function leaveMeeting(){
             $(".speaker-name-container").html('');
             data.speaker_res.forEach(function(speaker){
               var html = '<i class = "far fa-user-circle form-group"> '+ speaker.user_name +' </i><br>';
+              // if(speaker.user_id == myPeer._id && ISSPEAKER != undefined){
+              //     ISSPEAKER = true,
+              //     navigator.mediaDevices.getUserMedia({
+              //       audio: true
+              //     }).then(stream => {
+              //       myVideoStream = stream;
+              //       addVideoStream(audio, stream)
+              //     })
+              // }
               if($(".speaker-name-container") != null){
                 $(".speaker-name-container").append(html);
               }
@@ -158,6 +167,9 @@ function leaveMeeting(){
           window.location.reload();
           return false;
         }
+      },
+      "error" : function(){
+          window.location.reload()
       }
     })
   },3000);
