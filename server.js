@@ -43,6 +43,10 @@ app.get("/", async (req, res) => {
   res.redirect("/firstpage")
 })
 
+app.get("/favicon.ico" , async(req,res) => {
+  res.status(204)
+})
+
 app.get("/getMembers" , async(req,mainresponse) => {
   const room_id = "a991fa6a-af7f-4118-b5f7-32e6f8e43d0e"
   const room = Rooms.findOne({roomid : room_id}).then((res) => {
