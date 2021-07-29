@@ -33,7 +33,10 @@
                 <div class="col-6">
                     <div class="card shadow p-3 mb-5 bg-white rounded">
                         <div class="card-header">
-                            <%- user.roomName%> <%- user.created_by%>
+                            <%- user.roomName%> 
+                            <div class="">
+                                <i class = "far fa-user-circle form-group">Created By - <%- user.created_by%> </i>
+                            </div>
                         </div>
                         <div class="card-body">
                           <p class="card-text"><%- user.roomDesc%></p>

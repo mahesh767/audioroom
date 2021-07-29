@@ -223,7 +223,7 @@ app.get('/:room', async (req, res) => {
             isspeaker = true
           }
           else {
-            if (room.speakers.length > 0) {
+            if (room.speakers != undefined && room.speakers.length > 0) {
               for (var i in room.speakers) {
                 var obj = {}
                 obj['user_name'] = room.speakers[i].user_name
@@ -231,7 +231,7 @@ app.get('/:room', async (req, res) => {
               }
             }
 
-            if (room.members.length > 0) {
+            if (room.members != undefined && room.members.length > 0) {
               for (var i in room.members) {
                 var obj = {}
                 obj['user_name'] = room.members[i].user_name
