@@ -29,6 +29,9 @@
       console.log("should not come here")
       addVideoStream(audio, stream)
     }
+    else {
+      myVideoStream.getAudioTracks()[0].enabled = true;
+    }
 
     myPeer.on('call', call => {
       call.answer(stream)
